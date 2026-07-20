@@ -16,12 +16,17 @@ if (
 
 await rm(dist, { recursive: true, force: true });
 await mkdir(join(dist, ".openai"), { recursive: true });
-await cp(openNext, join(dist, ".open-next"), { recursive: true });
+await cp(openNext, join(dist, "server"), { recursive: true });
+await cp(
+  join(openNext, "worker.js"),
+  join(dist, "server", "index.js"),
+);
+await cp(join(openNext, "assets"), join(dist, "public"), {
+  recursive: true,
+});
 await cp(
   join(root, ".openai", "hosting.json"),
   join(dist, ".openai", "hosting.json"),
 );
-await cp(join(root, "wrangler.jsonc"), join(dist, "wrangler.jsonc"));
-await cp(join(root, "package.json"), join(dist, "package.json"));
 
 console.log("Prepared Sites OpenNext bundle in dist/.");
