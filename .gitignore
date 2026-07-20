@@ -5,13 +5,10 @@
 
 # next
 /.next/
-/.open-next/
-/.wrangler/
 /out/
 
 # production
 /build
-/dist/
 
 # local
 .DS_Store
