@@ -52,7 +52,8 @@ await rename(
   join(dist, "server", "worker.js"),
   join(dist, "server", "index.js"),
 );
-await cp(join(openNext, "assets"), join(dist, "public"), {
+// Sites' deployable full-stack layout uses dist/client for browser assets.
+await cp(join(openNext, "assets"), join(dist, "client"), {
   recursive: true,
 });
 await cp(
