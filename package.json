@@ -1,0 +1,31 @@
+{
+  "name": "gymos",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "verify:services": "node --env-file=.env.local scripts/verify-services.mjs"
+  },
+  "dependencies": {
+    "@google/generative-ai": "^0.24.1",
+    "@supabase/supabase-js": "^2.57.4",
+    "lucide-react": "^0.468.0",
+    "next": "16.2.10",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "recharts": "^3.2.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.14",
+    "@types/node": "^22.10.5",
+    "@types/react": "^19.0.3",
+    "@types/react-dom": "^19.0.2",
+    "eslint": "^9.17.0",
+    "eslint-config-next": "16.2.10",
+    "tailwindcss": "^4.1.14",
+    "typescript": "^5.7.2"
+  }
+}
