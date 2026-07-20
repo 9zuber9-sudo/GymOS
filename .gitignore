@@ -5,6 +5,7 @@
 
 # next
 /.next/
+/.open-next/
 /out/
 
 # production

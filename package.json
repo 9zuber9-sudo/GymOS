@@ -5,6 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:worker": "opennextjs-cloudflare build",
+    "preview:worker": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
     "start": "next start",
     "lint": "eslint .",
     "verify:services": "node --env-file=.env.local scripts/verify-services.mjs"
@@ -19,6 +21,7 @@
     "recharts": "^3.2.1"
   },
   "devDependencies": {
+    "@opennextjs/cloudflare": "^1.20.1",
     "@tailwindcss/postcss": "^4.1.14",
     "@types/node": "^22.10.5",
     "@types/react": "^19.0.3",
@@ -26,6 +29,7 @@
     "eslint": "^9.17.0",
     "eslint-config-next": "16.2.10",
     "tailwindcss": "^4.1.14",
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.2",
+    "wrangler": "^4.112.0"
   }
 }
