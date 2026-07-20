@@ -1,7 +1,11 @@
 import type { NextConfig } from "next";
+import { initOpenNextCloudflareForDev } from "@opennextjs/cloudflare";
+
+initOpenNextCloudflareForDev();
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  output: "standalone",
   // Allow this development build to be opened from a phone on the same LAN.
   allowedDevOrigins: ["192.168.0.106"],
   async headers() {
