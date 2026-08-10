@@ -20,7 +20,11 @@ export function PageHeader({
         <h1 className="text-2xl font-bold tracking-[-0.035em] text-white sm:text-3xl">{title}</h1>
         {description && <p className="mt-2 max-w-2xl text-sm leading-6 text-zinc-500">{description}</p>}
       </div>
-      {action}
+      {action && (
+        <div className="w-full [&>*]:w-full sm:w-auto sm:[&>*]:w-auto">
+          {action}
+        </div>
+      )}
     </header>
   );
 }

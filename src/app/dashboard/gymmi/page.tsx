@@ -609,7 +609,126 @@ function WorkoutCard({
                 </div>
               )}
 
-              <div className="overflow-x-auto">
+              <div className="space-y-2 p-3 sm:hidden">
+                {exercise.sets.map((set, setIndex) => (
+                  <div
+                    key={setIndex}
+                    className={cn(
+                      "rounded-xl border border-zinc-800 bg-zinc-950/55 p-3",
+                      set.completed && "border-green-500/20 bg-green-500/5",
+                    )}
+                  >
+                    <div className="mb-3 flex items-center justify-between">
+                      <span className="mono-font text-[10px] font-semibold text-zinc-500">
+                        SET {String(setIndex + 1).padStart(2, "0")}
+                      </span>
+                      <div className="flex items-center gap-1.5">
+                        <button
+                          disabled={saved}
+                          onClick={() => toggleCompleted(exerciseIndex, setIndex)}
+                          className={cn(
+                            "flex h-9 items-center gap-1.5 rounded-lg border border-zinc-700 bg-zinc-900 px-3 text-[10px] font-semibold text-zinc-500",
+                            set.completed && "border-green-500/30 bg-green-500/10 text-green-400",
+                          )}
+                        >
+                          <Check size={13} /> {set.completed ? "Done" : "Mark done"}
+                        </button>
+                        {!saved && exercise.sets.length > 1 && (
+                          <button
+                            onClick={() => removeSet(exerciseIndex, setIndex)}
+                            className="grid size-9 place-items-center rounded-lg text-zinc-700 hover:bg-red-500/10 hover:text-red-400"
+                            aria-label={`Remove set ${setIndex + 1}`}
+                          >
+                            <X size={13} />
+                          </button>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2">
+                      <label>
+                        <span className="mb-1.5 block text-[9px] font-semibold uppercase tracking-wider text-zinc-600">
+                          Weight (kg)
+                        </span>
+                        <div className="flex h-11 items-center rounded-lg border border-zinc-700 bg-zinc-900">
+                          <button
+                            disabled={saved}
+                            onClick={() =>
+                              updateSet(exerciseIndex, setIndex, {
+                                weight: Math.max(0, set.weight - 2.5),
+                              })
+                            }
+                            className="grid h-full w-9 shrink-0 place-items-center text-zinc-500 disabled:opacity-40"
+                            aria-label="Decrease weight"
+                          >
+                            <Minus size={13} />
+                          </button>
+                          <input
+                            disabled={saved}
+                            type="number"
+                            min="0"
+                            step="0.5"
+                            value={set.weight}
+                            onChange={(event) =>
+                              updateSet(exerciseIndex, setIndex, {
+                                weight: Number(event.target.value),
+                              })
+                            }
+                            className="min-w-0 flex-1 border-0 bg-transparent text-center text-base font-semibold text-zinc-200 outline-none"
+                          />
+                          <button
+                            disabled={saved}
+                            onClick={() =>
+                              updateSet(exerciseIndex, setIndex, {
+                                weight: set.weight + 2.5,
+                              })
+                            }
+                            className="grid h-full w-9 shrink-0 place-items-center text-zinc-500 disabled:opacity-40"
+                            aria-label="Increase weight"
+                          >
+                            <Plus size={13} />
+                          </button>
+                        </div>
+                      </label>
+                      <label>
+                        <span className="mb-1.5 block text-[9px] font-semibold uppercase tracking-wider text-zinc-600">
+                          Reps
+                        </span>
+                        <input
+                          disabled={saved}
+                          type="number"
+                          min="1"
+                          value={set.reps}
+                          onChange={(event) =>
+                            updateSet(exerciseIndex, setIndex, {
+                              reps: Number(event.target.value),
+                            })
+                          }
+                          className="h-11 w-full rounded-lg border border-zinc-700 bg-zinc-900 text-center text-base font-semibold text-zinc-200 outline-none focus:border-orange-500"
+                        />
+                      </label>
+                    </div>
+
+                    <button
+                      disabled={saved}
+                      onClick={() =>
+                        updateSet(exerciseIndex, setIndex, {
+                          toFailure: !set.toFailure,
+                        })
+                      }
+                      className={cn(
+                        "mt-2 flex h-10 w-full items-center justify-center gap-2 rounded-lg border border-zinc-700 bg-zinc-900 text-[10px] font-semibold text-zinc-600",
+                        set.toFailure && "border-red-500/30 bg-red-500/10 text-red-400",
+                      )}
+                    >
+                      <Flame size={13} className={set.toFailure ? "fill-red-500/50" : ""} />
+                      {set.toFailure ? "Training to failure" : "Mark as failure set"}
+                    </button>
+                  </div>
+                ))}
+              </div>
+
+              <div className="hidden overflow-x-auto sm:block">
                 <div className="min-w-[590px] px-3 py-2">
                   <div className="grid grid-cols-[32px_1.35fr_.7fr_58px_76px] gap-2 px-1 py-1">
                     {["SET", "WEIGHT", "REPS", "FAIL", "DONE"].map((heading) => (
@@ -988,15 +1107,15 @@ function GymmiChat() {
   );
 
   return (
-    <div className="relative mx-auto flex h-[calc(100vh-8.5rem)] max-w-5xl flex-col md:h-[calc(100vh-4.5rem)]">
-      <header className="mb-5 flex items-center gap-3">
-        <div className="relative grid size-11 place-items-center rounded-2xl bg-orange-500 text-black shadow-[0_0_28px_rgba(249,115,22,.18)]">
+    <div className="relative mx-auto flex h-[calc(100dvh-10rem)] max-w-5xl flex-col md:h-[calc(100dvh-4.5rem)]">
+      <header className="mb-3 flex items-center gap-2 sm:mb-5 sm:gap-3">
+        <div className="relative grid size-10 shrink-0 place-items-center rounded-2xl bg-orange-500 text-black shadow-[0_0_28px_rgba(249,115,22,.18)] sm:size-11">
           <Bot size={23} />
           <span className="absolute -bottom-0.5 -right-0.5 size-3 rounded-full border-2 border-[#09090b] bg-green-500" />
         </div>
-        <div>
+        <div className="min-w-0">
           <h1 className="text-xl font-bold tracking-[-0.03em]">Gymmi</h1>
-          <p className="mt-0.5 text-xs text-zinc-600">Your AI training partner · Online</p>
+          <p className="mt-0.5 hidden truncate text-xs text-zinc-600 min-[390px]:block">Your AI training partner · Online</p>
         </div>
         <div className="ml-auto flex items-center gap-2">
           <button
@@ -1008,15 +1127,15 @@ function GymmiChat() {
           </button>
           <button
             onClick={() => setShowHistory((current) => !current)}
-            className="ghost-button flex h-9 items-center gap-2 px-3 text-[10px]"
+            className="ghost-button flex size-9 items-center justify-center gap-2 text-[10px] sm:h-9 sm:w-auto sm:px-3"
           >
-            <History size={14} /> History
+            <History size={14} /> <span className="hidden sm:inline">History</span>
           </button>
         </div>
       </header>
 
       {showHistory && (
-        <div className="surface absolute right-0 top-14 z-40 w-full max-w-sm overflow-hidden shadow-2xl">
+        <div className="surface fixed inset-x-3 bottom-[calc(5rem+env(safe-area-inset-bottom))] z-40 max-h-[70dvh] overflow-hidden shadow-2xl sm:absolute sm:inset-x-auto sm:bottom-auto sm:right-0 sm:top-14 sm:w-full sm:max-w-sm">
           <div className="flex items-center justify-between border-b border-zinc-800 px-4 py-3">
             <div>
               <div className="eyebrow">Gymmi memory</div>
@@ -1029,7 +1148,7 @@ function GymmiChat() {
               <X size={14} />
             </button>
           </div>
-          <div className="max-h-[420px] overflow-y-auto p-2">
+          <div className="max-h-[calc(70dvh-4rem)] overflow-y-auto p-2 sm:max-h-[420px]">
             {sessions.length ? (
               sessions.map((session) => (
                 <div
@@ -1059,7 +1178,7 @@ function GymmiChat() {
                         tone: "success",
                       });
                     }}
-                    className="grid size-8 place-items-center rounded-lg text-zinc-700 opacity-0 hover:bg-red-500/10 hover:text-red-400 group-hover:opacity-100"
+                    className="grid size-10 place-items-center rounded-lg text-zinc-600 hover:bg-red-500/10 hover:text-red-400 sm:size-8 sm:text-zinc-700 sm:opacity-0 sm:group-hover:opacity-100"
                   >
                     <Trash2 size={13} />
                   </button>
@@ -1074,10 +1193,10 @@ function GymmiChat() {
         </div>
       )}
 
-      <div className="surface min-h-0 flex-1 overflow-y-auto p-3 sm:p-5">
-        <div className="space-y-5">
+      <div className="surface min-h-0 flex-1 overscroll-contain overflow-y-auto p-2.5 sm:p-5">
+        <div className="space-y-4 sm:space-y-5">
           {activeWorkout && !resumedWorkout && (
-            <div className="flex items-center gap-3 rounded-2xl border border-orange-500/25 bg-orange-500/7 p-4">
+            <div className="flex items-center gap-2 rounded-2xl border border-orange-500/25 bg-orange-500/7 p-3 sm:gap-3 sm:p-4">
               <div className="grid size-10 place-items-center rounded-xl bg-orange-500/10 text-orange-500">
                 <Dumbbell size={18} />
               </div>
@@ -1099,8 +1218,8 @@ function GymmiChat() {
             </div>
           )}
           {resumedWorkout && (
-            <div className="flex gap-3">
-              <div className="mt-1 grid size-8 shrink-0 place-items-center rounded-xl bg-orange-500/10 text-orange-500">
+            <div className="flex gap-2 sm:gap-3">
+              <div className="mt-1 hidden size-8 shrink-0 place-items-center rounded-xl bg-orange-500/10 text-orange-500 sm:grid">
                 <Bot size={16} />
               </div>
               <div className="w-full max-w-[760px]">
@@ -1116,14 +1235,14 @@ function GymmiChat() {
             return (
               <div
                 key={`${index}-${message.content.slice(0, 20)}`}
-                className={cn("flex gap-3", message.role === "user" && "justify-end")}
+                className={cn("flex gap-2 sm:gap-3", message.role === "user" && "justify-end")}
               >
                 {message.role === "assistant" && (
-                  <div className="mt-1 grid size-8 shrink-0 place-items-center rounded-xl bg-orange-500/10 text-orange-500">
+                  <div className="mt-1 hidden size-8 shrink-0 place-items-center rounded-xl bg-orange-500/10 text-orange-500 sm:grid">
                     <Bot size={16} />
                   </div>
                 )}
-                <div className={cn("max-w-[88%] sm:max-w-[82%]", workout && "w-full max-w-[760px]")}>
+                <div className={cn("max-w-[94%] sm:max-w-[82%]", workout && "w-full max-w-[760px]")}>
                   {workout ? (
                     <WorkoutCard
                       initial={workout}
@@ -1136,7 +1255,7 @@ function GymmiChat() {
                   ) : (
                     <div
                       className={cn(
-                        "rounded-2xl px-4 py-3 text-sm leading-6",
+                        "break-words rounded-2xl px-3.5 py-2.5 text-[13px] leading-5 sm:px-4 sm:py-3 sm:text-sm sm:leading-6",
                         message.role === "assistant"
                           ? "rounded-tl-sm border border-zinc-800 bg-zinc-900 text-zinc-300"
                           : "rounded-tr-sm bg-orange-500 font-medium text-[#1d0b02]",
@@ -1147,7 +1266,7 @@ function GymmiChat() {
                   )}
                 </div>
                 {message.role === "user" && (
-                  <div className="mt-1 grid size-8 shrink-0 place-items-center rounded-xl border border-zinc-800 bg-zinc-900 text-zinc-500">
+                  <div className="mt-1 hidden size-8 shrink-0 place-items-center rounded-xl border border-zinc-800 bg-zinc-900 text-zinc-500 sm:grid">
                     <UserRound size={15} />
                   </div>
                 )}
@@ -1155,8 +1274,8 @@ function GymmiChat() {
             );
           })}
           {loading && (
-            <div className="flex gap-3">
-              <div className="grid size-8 place-items-center rounded-xl bg-orange-500/10 text-orange-500">
+            <div className="flex gap-2 sm:gap-3">
+              <div className="hidden size-8 place-items-center rounded-xl bg-orange-500/10 text-orange-500 sm:grid">
                 <Bot size={16} />
               </div>
               <div className="flex items-center gap-1.5 rounded-2xl rounded-tl-sm border border-zinc-800 bg-zinc-900 px-4 py-3">
@@ -1175,7 +1294,7 @@ function GymmiChat() {
         </div>
       </div>
 
-      <div className="pt-4">
+      <div className="pt-2.5 sm:pt-4">
         <form
           onSubmit={(event) => {
             event.preventDefault();
@@ -1194,12 +1313,12 @@ function GymmiChat() {
             }}
             rows={1}
             placeholder="Ask Gymmi or describe today’s workout…"
-            className="input min-h-14 resize-none py-4 pl-5 pr-16 text-sm"
+            className="input min-h-12 resize-none py-3.5 pl-4 pr-14 text-base sm:min-h-14 sm:py-4 sm:pl-5 sm:pr-16 sm:text-sm"
           />
           <button
             type="submit"
             disabled={loading || !input.trim()}
-            className="absolute right-2 top-2 grid size-10 place-items-center rounded-xl bg-orange-500 text-black transition hover:bg-orange-400 disabled:cursor-not-allowed disabled:opacity-40"
+            className="absolute right-1.5 top-1.5 grid size-9 place-items-center rounded-xl bg-orange-500 text-black transition hover:bg-orange-400 disabled:cursor-not-allowed disabled:opacity-40 sm:right-2 sm:top-2 sm:size-10"
           >
             {loading ? <LoaderCircle size={17} className="animate-spin" /> : <Send size={17} />}
           </button>

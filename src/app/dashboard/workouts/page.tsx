@@ -30,8 +30,8 @@ function BodyMap({ exercises }: { exercises: TemplateExercise[] }) {
   const fill = (muscle: ReturnType<typeof muscleOf>) =>
     active.has(muscle) ? "#f97316" : "#3f3f46";
   return (
-    <div className="relative mx-auto flex max-w-[330px] items-center justify-center gap-5 rounded-2xl border border-zinc-800 bg-zinc-950/45 px-5 py-6">
-      <svg viewBox="0 0 100 250" className="h-64 w-28" aria-label="Front muscle view">
+    <div className="relative mx-auto flex max-w-[330px] items-center justify-center gap-2 rounded-2xl border border-zinc-800 bg-zinc-950/45 px-2 py-5 sm:gap-5 sm:px-5 sm:py-6">
+      <svg viewBox="0 0 100 250" className="h-52 w-24 sm:h-64 sm:w-28" aria-label="Front muscle view">
         <text x="50" y="10" textAnchor="middle" fill="#52525b" fontSize="7">FRONT</text>
         <circle cx="50" cy="29" r="13" fill="#52525b" />
         <rect x="43" y="41" width="14" height="10" rx="5" fill="#52525b" />
@@ -48,7 +48,7 @@ function BodyMap({ exercises }: { exercises: TemplateExercise[] }) {
         <path d="M28 175 L47 175 L43 232 L31 232Z" fill={fill("legs")} />
         <path d="M72 175 L53 175 L57 232 L69 232Z" fill={fill("legs")} />
       </svg>
-      <svg viewBox="0 0 100 250" className="h-64 w-28" aria-label="Back muscle view">
+      <svg viewBox="0 0 100 250" className="h-52 w-24 sm:h-64 sm:w-28" aria-label="Back muscle view">
         <text x="50" y="10" textAnchor="middle" fill="#52525b" fontSize="7">BACK</text>
         <circle cx="50" cy="29" r="13" fill="#52525b" />
         <rect x="43" y="41" width="14" height="10" rx="5" fill="#52525b" />
@@ -83,7 +83,7 @@ function ExerciseEditor({
   return (
     <div className="space-y-2">
       {exercises.map((exercise, index) => (
-        <div key={index} className="grid grid-cols-[1fr_58px_58px_32px] items-center gap-2">
+        <div key={index} className="grid grid-cols-[minmax(0,1fr)_48px_48px_36px] items-center gap-1.5 sm:grid-cols-[1fr_58px_58px_32px] sm:gap-2">
           <input
             value={exercise.name}
             onChange={(event) => update(index, { name: event.target.value })}
@@ -254,7 +254,7 @@ export default function WorkoutsPage() {
               />
             </label>
             <div>
-              <div className="mb-2 grid grid-cols-[1fr_58px_58px_32px] gap-2 px-1">
+              <div className="mb-2 grid grid-cols-[minmax(0,1fr)_48px_48px_36px] gap-1.5 px-1 sm:grid-cols-[1fr_58px_58px_32px] sm:gap-2">
                 <span className="eyebrow text-[8px]">Exercise</span>
                 <span className="eyebrow text-center text-[8px]">Sets</span>
                 <span className="eyebrow text-center text-[8px]">Reps</span>
@@ -266,7 +266,7 @@ export default function WorkoutsPage() {
             <button
               disabled={busy || !name.trim() || exercises.some((exercise) => !exercise.name.trim())}
               onClick={createTemplate}
-              className="primary-button flex h-10 items-center gap-2 px-5 text-xs"
+              className="primary-button flex h-11 w-full items-center justify-center gap-2 px-5 text-xs sm:h-10 sm:w-auto"
             >
               <Save size={14} /> {busy ? "Saving…" : "Save template"}
             </button>
@@ -274,7 +274,7 @@ export default function WorkoutsPage() {
         </section>
       )}
 
-      <div className="grid min-h-[620px] gap-5 lg:grid-cols-[330px_1fr]">
+      <div className="grid min-h-0 gap-5 lg:min-h-[620px] lg:grid-cols-[330px_1fr]">
         <section className="surface overflow-hidden">
           <div className="border-b border-zinc-800 p-4">
             <div className="relative">
@@ -327,12 +327,12 @@ export default function WorkoutsPage() {
         <section className="surface overflow-hidden">
           {selected ? (
             <>
-              <div className="flex flex-col gap-4 border-b border-zinc-800 p-5 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex flex-col gap-4 border-b border-zinc-800 p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5">
                 {editing ? (
                   <input
                     value={name}
                     onChange={(event) => setName(event.target.value)}
-                    className="input h-11 max-w-sm px-3 text-lg font-semibold"
+                    className="input h-11 w-full max-w-sm px-3 text-lg font-semibold"
                   />
                 ) : (
                   <div>
@@ -340,7 +340,7 @@ export default function WorkoutsPage() {
                     <h2 className="mt-2 text-xl font-bold tracking-[-0.03em]">{selected.name}</h2>
                   </div>
                 )}
-                <div className="flex items-center gap-2">
+                <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto sm:flex-nowrap">
                   {editing ? (
                     <>
                       <button
@@ -350,7 +350,7 @@ export default function WorkoutsPage() {
                       >
                         <X size={15} />
                       </button>
-                      <button onClick={saveChanges} className="primary-button flex h-10 items-center gap-2 px-4 text-xs">
+                      <button onClick={saveChanges} className="primary-button ml-auto flex h-10 items-center gap-2 px-4 text-xs">
                         <Save size={14} /> Save
                       </button>
                     </>
@@ -395,7 +395,7 @@ export default function WorkoutsPage() {
                       </button>
                       <Link
                         href={`/dashboard/gymmi?template=${selected.id}`}
-                        className="primary-button flex h-10 items-center gap-2 px-4 text-xs"
+                        className="primary-button ml-auto flex h-10 items-center gap-2 px-4 text-xs"
                       >
                         <Play size={14} className="fill-black" /> Start
                       </Link>
@@ -405,8 +405,8 @@ export default function WorkoutsPage() {
               </div>
 
               {editing ? (
-                <div className="p-5">
-                  <div className="mb-2 grid grid-cols-[1fr_58px_58px_32px] gap-2 px-1">
+                <div className="p-3 sm:p-5">
+                  <div className="mb-2 grid grid-cols-[minmax(0,1fr)_48px_48px_36px] gap-1.5 px-1 sm:grid-cols-[1fr_58px_58px_32px] sm:gap-2">
                     <span className="eyebrow text-[8px]">Exercise</span>
                     <span className="eyebrow text-center text-[8px]">Sets</span>
                     <span className="eyebrow text-center text-[8px]">Reps</span>
@@ -414,7 +414,7 @@ export default function WorkoutsPage() {
                   <ExerciseEditor exercises={exercises} onChange={setExercises} />
                 </div>
               ) : (
-                <div className="grid gap-6 p-5 xl:grid-cols-[.8fr_1.2fr]">
+                <div className="grid gap-6 p-3 sm:p-5 xl:grid-cols-[.8fr_1.2fr]">
                   <div>
                     <div className="eyebrow mb-3">Muscle focus</div>
                     <BodyMap exercises={selected.exercises} />
@@ -422,7 +422,7 @@ export default function WorkoutsPage() {
                   <div>
                     <div className="eyebrow mb-3">Exercise plan</div>
                     <div className="overflow-hidden rounded-2xl border border-zinc-800">
-                      <div className="grid grid-cols-[1fr_70px_70px] bg-zinc-950/50 px-4 py-3">
+                      <div className="grid grid-cols-[minmax(0,1fr)_48px_48px] bg-zinc-950/50 px-3 py-3 sm:grid-cols-[1fr_70px_70px] sm:px-4">
                         {["EXERCISE", "SETS", "REPS"].map((heading) => (
                           <span key={heading} className="eyebrow text-[8px]">{heading}</span>
                         ))}
@@ -430,7 +430,7 @@ export default function WorkoutsPage() {
                       {selected.exercises.map((exercise, index) => (
                         <div
                           key={`${exercise.name}-${index}`}
-                          className="grid grid-cols-[1fr_70px_70px] items-center border-t border-zinc-800 px-4 py-4"
+                          className="grid grid-cols-[minmax(0,1fr)_48px_48px] items-center border-t border-zinc-800 px-3 py-3.5 sm:grid-cols-[1fr_70px_70px] sm:px-4 sm:py-4"
                         >
                           <div className="flex min-w-0 items-center gap-3">
                             <span className="mono-font text-[9px] text-zinc-700">

@@ -12,6 +12,7 @@ import {
   Dumbbell,
   FileText,
   Home,
+  LoaderCircle,
   LogOut,
   Menu,
   Settings,
@@ -44,27 +45,49 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("Athlete");
+  const [authReady, setAuthReady] = useState(!hasSupabase);
 
   useEffect(() => {
-    async function loadProfile() {
-      if (hasSupabase) {
-        const result = await supabase!.auth.getUser();
-        if (!result.data.user) {
-          router.replace("/login");
-          return;
-        }
-        const fullName = result.data.user?.user_metadata?.full_name;
-        if (fullName) setName(fullName);
-      } else {
+    if (!hasSupabase) {
+      const timer = window.setTimeout(() => {
         const raw = window.localStorage.getItem("gymos-user");
         if (raw) {
           try {
             setName(JSON.parse(raw).full_name || "Athlete");
           } catch {}
         }
-      }
+      }, 0);
+      return () => window.clearTimeout(timer);
     }
-    loadProfile();
+
+    const {
+      data: { subscription },
+    } = supabase!.auth.onAuthStateChange((event, session) => {
+      if (event === "SIGNED_OUT") {
+        setAuthReady(false);
+        router.replace("/login");
+        return;
+      }
+
+      if (
+        event === "INITIAL_SESSION" ||
+        event === "SIGNED_IN" ||
+        event === "TOKEN_REFRESHED" ||
+        event === "USER_UPDATED"
+      ) {
+        if (!session?.user) {
+          setAuthReady(false);
+          router.replace("/login");
+          return;
+        }
+
+        const fullName = session.user.user_metadata?.full_name;
+        if (fullName) setName(fullName);
+        setAuthReady(true);
+      }
+    });
+
+    return () => subscription.unsubscribe();
   }, [router]);
 
   async function signOut() {
@@ -162,8 +185,17 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <Menu size={19} />
           </button>
         </div>
-        <main className="mx-auto min-h-screen max-w-[1500px] px-4 pb-28 pt-7 sm:px-7 md:pb-9 lg:px-10 lg:py-9">
-          {children}
+        <main className="mx-auto min-h-screen max-w-[1500px] px-4 pb-28 pt-5 sm:px-7 sm:pt-7 md:pb-9 lg:px-10 lg:py-9">
+          {authReady ? (
+            children
+          ) : (
+            <div className="surface grid min-h-56 place-items-center">
+              <div className="flex items-center gap-3 text-sm text-zinc-500">
+                <LoaderCircle className="animate-spin text-orange-500" size={18} />
+                Securing your GymOS session
+              </div>
+            </div>
+          )}
         </main>
         <nav className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-5 border-t border-[#27272A] bg-[#111113]/95 px-2 pb-[max(.55rem,env(safe-area-inset-bottom))] pt-2 backdrop-blur-xl md:hidden">
           {[
