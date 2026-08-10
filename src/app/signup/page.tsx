@@ -8,6 +8,29 @@ import { AuthShell } from "@/components/auth-shell";
 import { showToast } from "@/components/toast-provider";
 import { hasSupabase, supabase } from "@/lib/supabase";
 
+function getSignupErrorMessage(error: unknown) {
+  if (error && typeof error === "object") {
+    const authError = error as {
+      message?: unknown;
+      code?: unknown;
+      status?: unknown;
+    };
+    const message =
+      typeof authError.message === "string" ? authError.message.trim() : "";
+
+    if (message && message !== "{}") return message;
+
+    if (
+      authError.code === "unexpected_failure" ||
+      (typeof authError.status === "number" && authError.status >= 500)
+    ) {
+      return "Supabase could not send the confirmation email. Check Authentication logs and Custom SMTP settings.";
+    }
+  }
+
+  return "Could not create your account. Please try again, then check the Supabase Auth logs.";
+}
+
 export default function SignupPage() {
   const router = useRouter();
   const [form, setForm] = useState({
@@ -69,8 +92,7 @@ export default function SignupPage() {
         router.push("/dashboard");
       }
     } catch (err) {
-      const message =
-        err instanceof Error ? err.message : "Could not create your account.";
+      const message = getSignupErrorMessage(err);
       setError(message);
       showToast({
         title: "Signup failed",
